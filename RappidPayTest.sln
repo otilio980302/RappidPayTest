@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4A014650-2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RappidPayTest.UnitTest_Main", "UnitTest_Main\RappidPayTest.UnitTest_Main.csproj", "{321B57AD-6C2B-4AB2-BEE6-B32132B982A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RappidPay.Domain", "Domain\RappidPay.Domain.csproj", "{0B1883EC-C9AA-4946-8E0C-AF0CFB08EB5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RappidPayTest.Domain", "Domain\RappidPayTest.Domain.csproj", "{0B1883EC-C9AA-4946-8E0C-AF0CFB08EB5D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RappidPayTest.Identity", "Identity\RappidPayTest.Identity.csproj", "{BBEFD219-AFFF-4BE8-978E-5C42FC087857}"
 EndProject

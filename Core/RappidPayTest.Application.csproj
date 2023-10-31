@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\RappidPay.Domain.csproj" />
+    <ProjectReference Include="..\Domain\RappidPayTest.Domain.csproj" />
   </ItemGroup>
 
 </Project>

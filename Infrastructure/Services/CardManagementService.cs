@@ -20,8 +20,8 @@ namespace RappidPayTest.Infrastructure.Services
     {
         private readonly IRepositoryAsync<CardManagement> _cardManagementRepo;
         private readonly IMapper _mapper;
-        private readonly IValidator<CardManagementDto> _validator;
-        public CardManagementService(IRepositoryAsync<CardManagement> cardManagementRepo, IMapper mapper, IValidator<CardManagementDto> validator, IHttpContextAccessor context) : base(context)
+        private readonly IValidator<CardManagementCreateDto> _validator;
+        public CardManagementService(IRepositoryAsync<CardManagement> cardManagementRepo, IMapper mapper, IValidator<CardManagementCreateDto> validator, IHttpContextAccessor context) : base(context)
         {
             _cardManagementRepo = cardManagementRepo;
             _mapper = mapper;
@@ -35,51 +35,37 @@ namespace RappidPayTest.Infrastructure.Services
             throw new ApiException("Card Management not found");
         }
 
-        public async Task<Response<CardManagementVm>> InsertAsync(CardManagementDto dto)
+        public async Task<Response<CardManagementVm>> InsertAsync(CardManagementCreateDto dto)
         {
 
             var valResult = _validator.Validate(dto);
             if (!valResult.IsValid) throw new ApiValidationException(valResult.Errors);
 
             var obj = _mapper.Map<CardManagement>(dto);
-
+            obj.CreateAt = DateTime.Now;
+            obj.CreateBy = Convert.ToInt32(base.GetLoggerUserId());
+            obj.IsDeleted = false;
+            obj.Status = "A";
 
             return new Response<CardManagementVm>(_mapper.Map<CardManagementVm>(await _cardManagementRepo.AddAsync(obj)));
-
         }
 
-        public async Task<Response<CardManagementVm>> UpdateAsync(int id, CardManagementDto dto)
+        public async Task<Response<CardManagementVm>> UpdateAsync(CardManagementDto obj)
         {
-            var valResult = _validator.Validate(dto);
-            if (!valResult.IsValid) throw new ApiValidationException(valResult.Errors);
+            var objDb = await _cardManagementRepo.WhereAsync(x => x.CardNumber.Equals(obj.CardNumber));
+            CardManagement cardManagement = new CardManagement();
+            cardManagement = objDb;
+            cardManagement.Balance = objDb.Balance + obj.Balance;
 
-            await ExitsAsync(id);
-
-            var objDb = await _cardManagementRepo.WhereAsync(x => x.CardNumber.Equals(id));
-            var obj = _mapper.Map<CardManagement>(dto);
-
-            //Note: You can automap the object or map manualy, as this code down.
-
-            //#region Mapping 
-            //obj.Name = dto.Name;
-            //obj.LasName = dto.LasName;
-            //obj.Address = dto.Address;
-            //obj.Status = dto.Status;
-            //obj.Note = dto.Note;
-            //obj.YearOfbirth = dto.YearOfbirth;
-            //obj.MonthOfbirth = dto.MonthOfbirth;
-            //obj.DayOfbirth = dto.DayOfbirth;
-            //#endregion Mapping
-
-            return new Response<CardManagementVm>(_mapper.Map<CardManagementVm>(await _cardManagementRepo.UpdateAsync(obj)));
+            return new Response<CardManagementVm>(_mapper.Map<CardManagementVm>(await _cardManagementRepo.UpdateAsync(cardManagement)));
         }
 
-        public async Task<Response<CardManagementVm>> GetByIdAsync(int id)
+        public async Task<Response<CardManagementVm>> GetByCardNumberAsync(string CardNumber)
         {
-            var data = await _cardManagementRepo.GetByIdAsync(id);
+            var data = await _cardManagementRepo.WhereAsync(x => x.CardNumber == CardNumber);
             if (data == null)
             {
-                throw new KeyNotFoundException($"Card Management not found by id={id}");
+                throw new KeyNotFoundException($"Card Management not found by id={CardNumber}");
             }
 
             return new Response<CardManagementVm>(_mapper.Map<CardManagementVm>(data));

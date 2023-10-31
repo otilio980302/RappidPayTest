@@ -19,38 +19,36 @@ namespace RappidPayTest.Api.Controllers
             _cardManagementService = cardManagementService;
         }
         //[Authorize(Roles = "Administrator")]
-        [HttpGet("{id}")]
+        [HttpGet("{CardNumber}")]
         [ProducesResponseType(typeof(Response<CardManagementVm>), 200)]
-        public async Task<IActionResult> GetAsync(int id)
+        public async Task<IActionResult> GetAsync(string CardNumber)
         {
-            return Ok(await _cardManagementService.GetByIdAsync(id));
+            return Ok(await _cardManagementService.GetByCardNumberAsync(CardNumber));
         }
 
         //[Authorize]
-        [HttpGet("")]
-        [ProducesResponseType(typeof(PagedResponse<IList<CardManagementVm>>), 200)]
-        public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, string filter = "")
-        {
-            var user = base.GetLoggerUser();
-            var userId = base.GetLoggerUserId();
+        //[HttpGet("")]
+        //[ProducesResponseType(typeof(PagedResponse<IList<CardManagementVm>>), 200)]
+        //public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, string filter = "")
+        //{
+        //    var user = base.GetLoggerUser();
+        //    var userId = base.GetLoggerUserId();
 
-
-
-            return Ok(await _cardManagementService.GetPagedListAsync(pageNumber, pageSize, filter));
-        }
+        //    return Ok(await _cardManagementService.GetPagedListAsync(pageNumber, pageSize, filter));
+        //}
 
         [HttpPost]
         [ProducesResponseType(typeof(Response<IList<CardManagementVm>>), 200)]
-        public async Task<IActionResult> PostAsync([FromBody] CardManagementDto obj)
+        public async Task<IActionResult> PostAsync([FromBody] CardManagementCreateDto obj)
         {
             return Ok(await _cardManagementService.InsertAsync(obj));
         }
 
-        [HttpPut]
+        [HttpPut("")]
         [ProducesResponseType(typeof(Response<IList<CardManagementVm>>), 200)]
-        public async Task<IActionResult> PutAsync(int id, [FromBody] CardManagementDto obj)
+        public async Task<IActionResult> PutAsync(CardManagementDto obj)
         {
-            return Ok(await _cardManagementService.UpdateAsync(id, obj));
+            return Ok(await _cardManagementService.UpdateAsync(obj));
         }
 
     }

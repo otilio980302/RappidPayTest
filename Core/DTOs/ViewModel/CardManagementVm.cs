@@ -1,7 +1,8 @@
 ﻿namespace RappidPayTest.Application.DTOs.ViewModel
 {
-    public partial class CardManagementVm : CardManagementDto
+    public partial class CardManagementVm
     {
-        public int ID { get; set; }
+        public string CardNumber { get; set; }
+        public decimal Balance { get; set; }
     }
 }
