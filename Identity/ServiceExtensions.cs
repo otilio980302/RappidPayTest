@@ -8,15 +8,15 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System;
 using System.Text;
-using RappidPayTest.Application.DTOs.Settings;
-using RappidPayTest.Application.Interfaces.Services.Security;
-using RappidPayTest.Application.Wrappers;
-using RappidPayTest.Identity.Contexts;
-using RappidPayTest.Identity.Models;
-using RappidPayTest.Identity.Services;
+using RapidPayTest.Application.DTOs.Settings;
+using RapidPayTest.Application.Interfaces.Services.Security;
+using RapidPayTest.Application.Wrappers;
+using RapidPayTest.Identity.Contexts;
+using RapidPayTest.Identity.Models;
+using RapidPayTest.Identity.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace RappidPayTest.Identity
+namespace RapidPayTest.Identity
 {
     public static class ServiceExtensions
     {
@@ -30,6 +30,12 @@ namespace RappidPayTest.Identity
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
 
             services.AddSingleton(JWTSettings => configuration.GetSection("JWTSettings").Get<JWTSettings>());
+
+            #region Services
+            services.AddScoped<ICryptographyProcessorService, CryptographyProcessorService>();
+            services.AddScoped<IAccountService, AccountService>();
+            #endregion
+
             services.AddScoped<UserManager<ApplicationUser>>();
             services.AddScoped<RoleManager<IdentityRole>>();
             services.AddScoped<SignInManager<ApplicationUser>>();
@@ -56,6 +62,8 @@ namespace RappidPayTest.Identity
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTSettings:Key"]))
                 };
 
+
+
                 o.Events = new JwtBearerEvents()
                 {
                     OnChallenge = context =>
@@ -77,7 +85,13 @@ namespace RappidPayTest.Identity
                 };
             });
 
-
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdmin", policy =>
+                {
+                    policy.RequireClaim("IDRole", "1"); // Verifica que el claim "IDRole" tenga el valor "1"
+                });
+            });
 
 
 

@@ -6,10 +6,10 @@ using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using RappidPayTest.Application.Exceptions;
-using RappidPayTest.Application.Wrappers;
+using RapidPayTest.Application.Exceptions;
+using RapidPayTest.Application.Wrappers;
 
-namespace RappidPayTest.Api.Middlewares
+namespace RapidPayTest.Api.Middlewares
 {
     public class LogsAndErrorHandlerMiddleware
     {

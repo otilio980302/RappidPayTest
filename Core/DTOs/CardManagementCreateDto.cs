@@ -1,4 +1,4 @@
-﻿namespace RappidPayTest.Application.DTOs
+﻿namespace RapidPayTest.Application.DTOs
 {
     public partial class CardManagementCreateDto : CardManagementDto
     {

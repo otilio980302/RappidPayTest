@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RappidPayTest.Domain.Entities
+namespace RapidPayTest.Domain.Entities
 {
     public class Role
     {

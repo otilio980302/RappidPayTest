@@ -8,125 +8,153 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using RappidPayTest.Application.DTOs.Settings;
-using RappidPayTest.Application.Exceptions;
-using RappidPayTest.Application.Interfaces.Services.Security;
-using RappidPayTest.Application.Wrappers;
-using RappidPayTest.Identity.Helpers;
-using RappidPayTest.Identity.Models;
+using RapidPayTest.Application.DTOs.Settings;
+using RapidPayTest.Application.Exceptions;
+using RapidPayTest.Application.Interfaces.Services.Security;
+using RapidPayTest.Application.Wrappers;
+using RapidPayTest.Identity.Helpers;
+using RapidPayTest.Identity.Models;
+using RapidPayTest.Application.Interfaces.Repositories;
+using RapidPayTest.Domain.Entities;
+using RapidPayTest.Application.DTOs;
+using AutoMapper;
+using RapidPayTest.Application.DTOs.ViewModel;
+using System.Linq.Expressions;
+using FluentValidation;
 
-namespace RappidPayTest.Identity.Services
+namespace RapidPayTest.Identity.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IRepositoryAsync<User> _userRepo;
+        private readonly IValidator<UserDto> _validator;
+        private readonly ICryptographyProcessorService _cryptographyProcessorService;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IMapper _mapper;
         private readonly JWTSettings _jwtSettings;
 
-        public AccountService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, JWTSettings jwtSettings)
+        public AccountService(JWTSettings jwtSettings, IRepositoryAsync<User> userRepo, IValidator<UserDto> validator, ICryptographyProcessorService cryptographyProcessorService, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
-            _userManager = userManager;
+            _userRepo = userRepo;
+            _validator = validator;
+            _cryptographyProcessorService = cryptographyProcessorService;
             _roleManager = roleManager;
-            _signInManager = signInManager;
+            _mapper = mapper;
             _jwtSettings = jwtSettings;
         }
 
         public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress)
         {
+            //List<Expression<Func<User, object>>> includes = new List<Expression<Func<User, object>>>();
+            //includes.Add(d => d.Role);
 
-            var usuario = await _userManager.FindByEmailAsync(request.Email);
-            if (usuario == null)
+            if (!await _userRepo.Exists(x => x.Email == request.Email))
             {
-                throw new ApiException($"Email ${request.Email} not found.");
+                throw new ApiException($"User {request.Email} not found.");
+            }
+            var userData = await _userRepo.WhereAllAsync(x => x.Email.Equals(request.Email));
+            var user = userData.LastOrDefault();
+
+            if (user.IsDeleted == true)
+            {
+                throw new ApiException($"User {request.Email} is disabled.");
+            }
+            var PasswordsMatchResult = _cryptographyProcessorService.PasswordsMatch(request.Password, user.PasswordKey, user.Password);
+            if (!PasswordsMatchResult)
+            {
+                throw new ApiException($"Invalid password");
             }
 
-            var result = await _signInManager.PasswordSignInAsync(usuario.UserName, request.Password, false, lockoutOnFailure: false);
-            if (!result.Succeeded)
-            {
-                throw new ApiException($"invalid user or password");
-            }
-
-            JwtSecurityToken jwtSecurityToken = await GenerateJWTToken(usuario);
+            JwtSecurityToken jwtSecurityToken = await GenerateJWTToken(user);
             AuthenticationResponse response = new AuthenticationResponse();
-            response.Id = usuario.Id;
             response.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-            response.Email = usuario.Email;
-            response.UserName = usuario.UserName;
+            response.Expiration = DateTime.Now.AddMinutes(_jwtSettings.DurationInMinutes);
+            response.ValidationContrato = user.ContractValidation;
 
-            var rolesList = await _userManager.GetRolesAsync(usuario).ConfigureAwait(false);
-            response.Roles = rolesList.ToList();
-            response.IsVerified = usuario.EmailConfirmed;
+            user.LastAccess = DateTime.Now;
 
-            var refreshToken = GenerateRefreshToken(ipAddress);
-            response.RefreshToken = refreshToken.Token;
-            return new Response<AuthenticationResponse>(response, $"Authenticate {usuario.UserName}");
+            await _userRepo.UpdateAsync(user);
+            return new Response<AuthenticationResponse>(response);
         }
 
-        public async Task<Response<string>> RegisterAsync(RegisterRequest request, string origin)
+        public async Task<Response<UserVm>> RegisterAsync(UserDto request, string origin)
         {
-            var usuarioConElMismoUserName = await _userManager.FindByNameAsync(request.UserName);
-            if (usuarioConElMismoUserName != null)
+            var valResult = _validator.Validate(request);
+            if (!valResult.IsValid) throw new ApiValidationException(valResult.Errors);
+
+            var result = await _userRepo.Exists(x => x.Email.Equals(request.Email));
+
+            if (result == true)
             {
-                throw new ApiException($"This user= {request.UserName} already exists.");
+                throw new KeyNotFoundException($"already exist ={request.Email}");
             }
+
             var usuario = new ApplicationUser
             {
                 Email = request.Email,
                 Name = request.Name,
                 LastName = request.LastName,
-                IdentificationNumber = request.IdentificationNumber,
-                UserName = request.UserName,
+                IdentificationNumber = request.SocialNumber,
+                UserName = request.Name,
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
             };
 
-            var usuarioConElMismoCorreo = await _userManager.FindByEmailAsync(request.Email);
-            if (usuarioConElMismoCorreo != null)
-            {
-                throw new ApiException($"This email= {request.Email} already exists.");
-            }
-            else
-            {
-                var result = await _userManager.CreateAsync(usuario, request.Password);
-                if (result.Succeeded)
-                {
-                    //await _userManager.AddToRoleAsync(usuario, Roles.Basic.ToString());
-                    return new Response<string>(usuario.Id, message: $"Succesfully register {request.UserName}");
-                }
-                else
-                {
-                    throw new ApiException($"{result.Errors.ToString()}.");
-                }
-            }
+            var obj = _mapper.Map<User>(request);
+            var password = _cryptographyProcessorService.GetPasswordAndSecurityKeyInfo(request.Password);
+            obj.Password = password.HashedPassword;
+            obj.PasswordKey = password.SecurityKey;
+            obj.CreateAt = DateTime.UtcNow;
+            obj.IsDeleted = false;
+            obj.ContractValidation = true;
+            obj.RoleID = request.RoleID;
+            obj.Status = "A";
+
+            return new Response<UserVm>(_mapper.Map<UserVm>(await _userRepo.AddAsync(obj)));
         }
 
-        private async Task<JwtSecurityToken> GenerateJWTToken(ApplicationUser usuario)
+        public async Task<PagedResponse<IList<UserVm>>> GetUsers(int pageNumber, int pageSize, string filter = null)
         {
-            var userClaims = await _userManager.GetClaimsAsync(usuario);
-            var roles = await _userManager.GetRolesAsync(usuario);
 
-            var roleClaims = new List<Claim>();
+            List<Expression<Func<User, bool>>> queryFilter = new List<Expression<Func<User, bool>>>();
 
-            for (int i = 0; i < roles.Count; i++)
+            var list = await _userRepo.GetPagedList(pageNumber, pageSize, queryFilter);
+            if (list == null || list.Data.Count == 0)
             {
-                roleClaims.Add(new Claim("roles", roles[i]));
+                throw new KeyNotFoundException($"Users not found");
             }
+
+            return new PagedResponse<IList<UserVm>>(_mapper.Map<IList<UserVm>>(list.Data), list.PageNumber, list.PageSize, list.TotalCount);
+        }
+
+        private async Task<JwtSecurityToken> GenerateJWTToken(User user)
+        {
+            //var userClaims = await _userManager.GetClaimsAsync(user);
+            //var roles = await _userManager.GetRolesAsync(user);
+
+            //var roleClaims = new List<Claim>();
+
+            //for (int i = 0; i < roles.Count; i++)
+            //{
+            //    roleClaims.Add(new Claim("roles", roles[i]));
+            //}
 
             string ipAddress = IpHelper.GetIpAddress();
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, usuario.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("Email", usuario.Email),
-                new Claim("uid", usuario.Id),
+                new Claim("Email", user.Email),
+                new Claim("uid", user.ID.ToString()),
                 new Claim("ip", ipAddress),
-                new Claim("Name", usuario.Name),
-                new Claim("LastName", usuario.LastName),
-            }
-            .Union(userClaims)
-            .Union(roleClaims);
+                new Claim("name", user.Name),
+                new Claim("lastname", user.LastName),
+                new Claim("IDUser",user.ID.ToString()),
+                new Claim("IDRole",user.RoleID.ToString()),
+                //new Claim("RolName",user.Role.RoleName.ToString()),
+                //new Claim("RolId",user.IDRole),
+             };
 
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);

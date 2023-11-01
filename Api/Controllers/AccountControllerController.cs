@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RappidPayTest.Application.DTOs;
-using RappidPayTest.Application.DTOs.Settings;
-using RappidPayTest.Application.DTOs.ViewModel;
-using RappidPayTest.Application.Interfaces.Services;
-using RappidPayTest.Application.Interfaces.Services.Security;
-using RappidPayTest.Application.Wrappers;
+using RapidPayTest.Application.DTOs;
+using RapidPayTest.Application.DTOs.Settings;
+using RapidPayTest.Application.DTOs.ViewModel;
+using RapidPayTest.Application.Interfaces.Services;
+using RapidPayTest.Application.Interfaces.Services.Security;
+using RapidPayTest.Application.Wrappers;
+using Microsoft.AspNetCore.Authorization;
+using RapidPayTest.Infrastructure.Services;
 
-namespace BaseBackendNet6.Api.Controllers
+namespace RapidPayTest.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -21,21 +23,30 @@ namespace BaseBackendNet6.Api.Controllers
         }
 
 
-
+        [Authorize(Policy = "RequireAdmin")]
         [HttpPost("Register")]
         [ProducesResponseType(typeof(Response<string>), 200)]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequest obj)
+        public async Task<IActionResult> RegisterAsync([FromBody] UserDto obj)
         {
             return Ok(await _accountService.RegisterAsync(obj, ""));
         }
 
-        [HttpPost]
+        [AllowAnonymous]
+        [HttpPost("LogIn")]
         [ProducesResponseType(typeof(Response<string>), 200)]
         public async Task<IActionResult> PostAsync([FromBody] AuthenticationRequest obj)
         {
             return Ok(await _accountService.AuthenticateAsync(obj, GenerateIPAddress()));
         }
 
+        [Authorize(Policy = "RequireAdmin")]
+        [HttpGet("GetUsers")]
+        [ProducesResponseType(typeof(PagedResponse<IList<UserVm>>), 200)]
+        public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, string filter = "")
+        {
+
+            return Ok(await _accountService.GetUsers(pageNumber, pageSize, filter));
+        }
 
         private string GenerateIPAddress()
         {

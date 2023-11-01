@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RappidPayTest.Domain.Entities.Base
+namespace RapidPayTest.Domain.Entities.Base
 {
     public class BaseEntity
     {

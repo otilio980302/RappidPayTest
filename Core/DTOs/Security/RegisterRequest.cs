@@ -1,4 +1,4 @@
-﻿namespace RapidPayTest.Application.DTOs.Settings
+﻿namespace RapidPayTest.Application.DTOs.Security
 {
     public class RegisterRequest
     {
@@ -8,6 +8,7 @@
         public string UserName { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
+
         public string IdentificationNumber { get; set; }
     }
 }

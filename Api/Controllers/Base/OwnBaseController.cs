@@ -1,8 +1,10 @@
-﻿using RappidPayTest.Identity.Models;
+﻿using RapidPayTest.Identity.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
-namespace RappidPayTest.Api.Controllers.Base
+namespace RapidPayTest.Api.Controllers.Base
 {
+    [Authorize]
     [ApiController]
     public class OwnBaseController : ControllerBase
     {

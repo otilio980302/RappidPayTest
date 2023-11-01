@@ -11,19 +11,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infraestructure", "Infraest
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{E11CCFF2-EAD4-48CC-A469-CAA9B2E55967}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RappidPayTest.Application", "Core\RappidPayTest.Application.csproj", "{E4D10CA6-27E0-42C7-9C54-35714E02CBA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPayTest.Application", "Core\RapidPayTest.Application.csproj", "{E4D10CA6-27E0-42C7-9C54-35714E02CBA8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RappidPayTest.Infrastructure", "Infrastructure\RappidPayTest.Infrastructure.csproj", "{D3C88821-28D1-4843-B9C2-8DA79D8B63BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPayTest.Infrastructure", "Infrastructure\RapidPayTest.Infrastructure.csproj", "{D3C88821-28D1-4843-B9C2-8DA79D8B63BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RappidPayTest.Api", "Api\RappidPayTest.Api.csproj", "{3EF9B30F-77CD-42A9-B45B-912383AE428A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPayTest.Api", "Api\RapidPayTest.Api.csproj", "{3EF9B30F-77CD-42A9-B45B-912383AE428A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4A014650-20DD-49F5-923E-578D2354F003}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RappidPayTest.UnitTest_Main", "UnitTest_Main\RappidPayTest.UnitTest_Main.csproj", "{321B57AD-6C2B-4AB2-BEE6-B32132B982A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPayTest.UnitTest_Main", "UnitTest_Main\RapidPayTest.UnitTest_Main.csproj", "{321B57AD-6C2B-4AB2-BEE6-B32132B982A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RappidPayTest.Domain", "Domain\RappidPayTest.Domain.csproj", "{0B1883EC-C9AA-4946-8E0C-AF0CFB08EB5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPayTest.Domain", "Domain\RapidPayTest.Domain.csproj", "{0B1883EC-C9AA-4946-8E0C-AF0CFB08EB5D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RappidPayTest.Identity", "Identity\RappidPayTest.Identity.csproj", "{BBEFD219-AFFF-4BE8-978E-5C42FC087857}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPayTest.Identity", "Identity\RapidPayTest.Identity.csproj", "{BBEFD219-AFFF-4BE8-978E-5C42FC087857}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "QueryDb", "QueryDb", "{1A2F9A51-0A18-4B93-A6AE-8805210CE2C4}"
 	ProjectSection(SolutionItems) = preProject

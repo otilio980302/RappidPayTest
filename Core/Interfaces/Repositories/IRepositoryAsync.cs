@@ -1,11 +1,11 @@
-﻿using RappidPayTest.Application.Wrappers;
+﻿using RapidPayTest.Application.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace RappidPayTest.Application.Interfaces.Repositories
+namespace RapidPayTest.Application.Interfaces.Repositories
 {
     public interface IRepositoryAsync<T> where T : class
     {

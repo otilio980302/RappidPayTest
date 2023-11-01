@@ -1,7 +1,7 @@
-﻿using RappidPayTest.Identity.Models;
+﻿using RapidPayTest.Identity.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace RappidPayTest.Infrastructure.Services
+namespace RapidPayTest.Infrastructure.Services
 {
     public class BaseService
     {

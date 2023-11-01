@@ -1,6 +1,6 @@
-﻿using RappidPayTest.Infrastructure.Data;
+﻿using RapidPayTest.Infrastructure.Data;
 
-namespace RappidPayTest.UnitTest_Main.Configurations
+namespace RapidPayTest.UnitTest_Main.Configurations
 {
     public class DbConexionStringConfig
     {

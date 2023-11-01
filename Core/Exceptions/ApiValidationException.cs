@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RappidPayTest.Application.Exceptions
+namespace RapidPayTest.Application.Exceptions
 {
     public class ApiValidationException : Exception
     {

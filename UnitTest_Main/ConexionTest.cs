@@ -1,4 +1,4 @@
-namespace RappidPayTest.UnitTest_Main
+namespace RapidPayTest.UnitTest_Main
 {
     [TestClass]
     public class ConexionTest

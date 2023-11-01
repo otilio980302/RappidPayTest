@@ -1,14 +1,8 @@
-﻿using RapidPayTest.Domain.Entities.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
-namespace RapidPayTest.Domain.Entities
+namespace RapidPayTest.Application.DTOs.ViewModel
 {
-    public class User : BaseEntity
+    public partial class UserVm
     {
         public string Email { get; set; }
         public string Name { get; set; }
@@ -21,7 +15,5 @@ namespace RapidPayTest.Domain.Entities
         public int? Gender { get; set; }
         public string Phone { get; set; }
         public string Estate { get; set; }
-        public int RoleID { get; set; }
-        public virtual Role Role { get; set; }
     }
 }

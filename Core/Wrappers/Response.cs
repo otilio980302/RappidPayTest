@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RappidPayTest.Application.Wrappers
+namespace RapidPayTest.Application.Wrappers
 {
     public class Response<T>
     {

@@ -1,4 +1,4 @@
-﻿namespace RapidPayTest.Application.DTOs.Settings
+﻿namespace RapidPayTest.Application.DTOs.Security
 {
     public class JWTSettings
     {

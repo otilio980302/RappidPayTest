@@ -1,19 +1,19 @@
 ﻿using AutoMapper;
-using RappidPayTest.Application.DTOs;
-using RappidPayTest.Application.DTOs.ViewModel;
-using RappidPayTest.Domain.Entities;
+using RapidPayTest.Application.DTOs;
+using RapidPayTest.Application.DTOs.ViewModel;
+using RapidPayTest.Domain.Entities;
 
-namespace RappidPayTest.Application.Mapping
+namespace RapidPayTest.Application.Mapping
 {
     public class BaseMappings : Profile
     {
         public BaseMappings()
         {
-            CreateMap<Prioridades, PrioridadesVm>().ReverseMap();
-            CreateMap<Prioridades, PrioridadesDto>().ReverseMap();
-
             CreateMap<CardManagement, CardManagementVm>().ReverseMap();
             CreateMap<CardManagement, CardManagementDto>().ReverseMap();
+
+            CreateMap<User, UserVm>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
         }
     }
 }

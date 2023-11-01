@@ -25,11 +25,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\RappidPayTest.Application.csproj" />
-    <ProjectReference Include="..\Identity\RappidPayTest.Identity.csproj" />
-    <ProjectReference Include="..\Infrastructure\RappidPayTest.Infrastructure.csproj" />
+    <ProjectReference Include="..\Core\RapidPayTest.Application.csproj" />
+    <ProjectReference Include="..\Identity\RapidPayTest.Identity.csproj" />
+    <ProjectReference Include="..\Infrastructure\RapidPayTest.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties appsettings_1json__JsonSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
 
 </Project>

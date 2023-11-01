@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using RappidPayTest.Application.DTOs;
-using RappidPayTest.Application.DTOs.ViewModel;
-using RappidPayTest.Application.Wrappers;
+using RapidPayTest.Application.DTOs;
+using RapidPayTest.Application.DTOs.ViewModel;
+using RapidPayTest.Application.Wrappers;
 
-namespace RappidPayTest.Application.Interfaces.Repositories
+namespace RapidPayTest.Application.Interfaces.Repositories
 {
     public interface IDirectQueryOrSPRepository
     {

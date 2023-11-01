@@ -1,4 +1,4 @@
-﻿namespace RappidPayTest.Application.Wrappers
+﻿namespace RapidPayTest.Application.Wrappers
 {
     public class PagedResponse<T> : Response<T>
     {

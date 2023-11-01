@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RappidPayTest.Domain.Entities;
-using RappidPayTest.Infrastructure.Data.Configuration;
+using RapidPayTest.Domain.Entities;
+using RapidPayTest.Infrastructure.Data.Configuration;
 
-namespace RappidPayTest.Infrastructure.Data
+namespace RapidPayTest.Infrastructure.Data
 {
     public partial class PrincipalContext : DbContext
     {
@@ -24,9 +24,9 @@ namespace RappidPayTest.Infrastructure.Data
         {
         }
 
-        public virtual DbSet<Prioridades> Prioridades { get; set; }
         public virtual DbSet<CardManagement> CardManagement { get; set; }
-
+        public virtual DbSet<Transaction> Transaction { get; set; }
+        public virtual DbSet<User> User { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

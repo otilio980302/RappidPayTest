@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using RappidPayTest.Application.DTOs;
-using RappidPayTest.Application.DTOs.ViewModel;
-using RappidPayTest.Application.Exceptions;
-using RappidPayTest.Application.Interfaces.Repositories;
-using RappidPayTest.Application.Interfaces.Services;
-using RappidPayTest.Application.Wrappers;
-using RappidPayTest.Domain.Entities;
-using RappidPayTest.Infrastructure.Services;
+using RapidPayTest.Application.DTOs;
+using RapidPayTest.Application.DTOs.ViewModel;
+using RapidPayTest.Application.Exceptions;
+using RapidPayTest.Application.Interfaces.Repositories;
+using RapidPayTest.Application.Interfaces.Services;
+using RapidPayTest.Application.Wrappers;
+using RapidPayTest.Domain.Entities;
+using RapidPayTest.Infrastructure.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -14,15 +14,19 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace RappidPayTest.Infrastructure.Services
+namespace RapidPayTest.Infrastructure.Services
 {
     public class CardManagementService : BaseService, ICardManagementService
     {
+        private readonly ICardManagementRepository _cardManagementRepository;
+        private readonly IRepositoryAsync<Transaction> _transactionRepo;
         private readonly IRepositoryAsync<CardManagement> _cardManagementRepo;
         private readonly IMapper _mapper;
         private readonly IValidator<CardManagementCreateDto> _validator;
-        public CardManagementService(IRepositoryAsync<CardManagement> cardManagementRepo, IMapper mapper, IValidator<CardManagementCreateDto> validator, IHttpContextAccessor context) : base(context)
+        public CardManagementService(ICardManagementRepository cardManagementRepository, IRepositoryAsync<Transaction> transactionRepo, IRepositoryAsync<CardManagement> cardManagementRepo, IMapper mapper, IValidator<CardManagementCreateDto> validator, IHttpContextAccessor context) : base(context)
         {
+            _cardManagementRepository = cardManagementRepository;
+            _transactionRepo = transactionRepo;
             _cardManagementRepo = cardManagementRepo;
             _mapper = mapper;
             _validator = validator;
@@ -46,6 +50,7 @@ namespace RappidPayTest.Infrastructure.Services
             obj.CreateBy = Convert.ToInt32(base.GetLoggerUserId());
             obj.IsDeleted = false;
             obj.Status = "A";
+            obj.IDUser = dto.IDUser;
 
             return new Response<CardManagementVm>(_mapper.Map<CardManagementVm>(await _cardManagementRepo.AddAsync(obj)));
         }
@@ -53,11 +58,33 @@ namespace RappidPayTest.Infrastructure.Services
         public async Task<Response<CardManagementVm>> UpdateAsync(CardManagementDto obj)
         {
             var objDb = await _cardManagementRepo.WhereAsync(x => x.CardNumber.Equals(obj.CardNumber));
-            CardManagement cardManagement = new CardManagement();
-            cardManagement = objDb;
-            cardManagement.Balance = objDb.Balance + obj.Balance;
 
-            return new Response<CardManagementVm>(_mapper.Map<CardManagementVm>(await _cardManagementRepo.UpdateAsync(cardManagement)));
+            if (objDb == null)
+            {
+                throw new KeyNotFoundException($"Card Management not found");
+            }
+
+            decimal Fee = (UfeService.Instance.LastFeeAmount * obj.Amount);
+
+            CardManagement cardManagement = new();
+            cardManagement = objDb;
+            cardManagement.UpdateAt = DateTime.Now;
+            cardManagement.UpdateBy = Convert.ToInt32(base.GetLoggerUserId());
+            cardManagement.Balance = cardManagement.Balance + (obj.Amount - Fee);
+
+            Transaction transaction = new Transaction
+            {
+                CreateAt = DateTime.Now,
+                CreateBy = Convert.ToInt32(base.GetLoggerUserId()),
+                IsDeleted = false,
+                Status = "A",
+                PaymentAmount = (obj.Amount - Fee),
+                FeeAmount = Fee,
+                CardNumber = obj.CardNumber,
+                TotalPayment = obj.Amount
+            };
+
+            return new Response<CardManagementVm>(_mapper.Map<CardManagementVm>(await _cardManagementRepository.UpdateAsync(cardManagement, transaction)));
         }
 
         public async Task<Response<CardManagementVm>> GetByCardNumberAsync(string CardNumber)
@@ -71,32 +98,27 @@ namespace RappidPayTest.Infrastructure.Services
             return new Response<CardManagementVm>(_mapper.Map<CardManagementVm>(data));
         }
 
-
-        public async Task<PagedResponse<IList<CardManagementVm>>> GetPagedListAsync(int pageNumber, int pageSize, string filter = null)
+        public async Task<PagedResponse<IList<TransactionVm>>> GetTransactionPagedListAsync(int pageNumber, int pageSize, string filter = null)
         {
 
-            List<Expression<Func<CardManagement, bool>>> queryFilter = new List<Expression<Func<CardManagement, bool>>>();
-            List<Expression<Func<CardManagement, Object>>> includes = new List<Expression<Func<CardManagement, Object>>>();
+            List<Expression<Func<Transaction, bool>>> queryFilter = new List<Expression<Func<Transaction, bool>>>();
 
-
-            var user = base.GetLoggerUser();
             var userId = base.GetLoggerUserId();
 
+            var cardManagement = _mapper.Map<CardManagement>(await _cardManagementRepo.WhereAsync(x => x.IDUser.Equals(userId)));
 
             if (filter != null || filter.Length > 0)
             {
-                queryFilter.Add(x => x.CardNumber.Equals(filter));
+                queryFilter.Add(x => x.CardNumber.Equals(cardManagement.CardNumber));
             }
 
-            var list = await _cardManagementRepo.GetPagedList(pageNumber, pageSize, queryFilter, includes: includes);
+            var list = await _transactionRepo.GetPagedList(pageNumber, pageSize, queryFilter);
             if (list == null || list.Data.Count == 0)
             {
                 throw new KeyNotFoundException($"Card Management not found");
             }
 
-            return new PagedResponse<IList<CardManagementVm>>(_mapper.Map<IList<CardManagementVm>>(list.Data), list.PageNumber, list.PageSize, list.TotalCount);
+            return new PagedResponse<IList<TransactionVm>>(_mapper.Map<IList<TransactionVm>>(list.Data), list.PageNumber, list.PageSize, list.TotalCount);
         }
-
-
     }
 }

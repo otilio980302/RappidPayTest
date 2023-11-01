@@ -1,8 +1,8 @@
 ﻿namespace RapidPayTest.Application.DTOs.ViewModel
 {
-    public partial class CardManagementVm
+    public partial class TransactionVm
     {
         public string CardNumber { get; set; }
-        public decimal Balance { get; set; }
+        public decimal Amount { get; set; }
     }
 }

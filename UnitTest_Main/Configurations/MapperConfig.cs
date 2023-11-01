@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using RappidPayTest.Application.Mapping;
+using RapidPayTest.Application.Mapping;
 
 
-namespace RappidPayTest.UnitTest_Main.Configurations
+namespace RapidPayTest.UnitTest_Main.Configurations
 {
     public static class MapperConfig
     {

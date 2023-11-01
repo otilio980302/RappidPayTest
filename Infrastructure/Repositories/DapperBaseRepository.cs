@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace RappidPayTest.Infrastructure.Repositories
+namespace RapidPayTest.Infrastructure.Repositories
 {
     public class DapperBaseRepository
     {

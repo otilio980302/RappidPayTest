@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RappidPayTest.Domain.Entities;
+using RapidPayTest.Domain.Entities;
 
-namespace RappidPayTest.Infrastructure.Data.Configuration
+namespace RapidPayTest.Infrastructure.Data.Configuration
 {
     public class ModelsConfiguration
     {
@@ -10,19 +10,6 @@ namespace RappidPayTest.Infrastructure.Data.Configuration
         {
 
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
-
-
-            modelBuilder.Entity<Prioridades>(entity =>
-            {
-                entity.HasKey(e => e.CodPrioridad);
-
-                entity.ToTable("PRIORIDADES");
-
-                entity.Property(e => e.Prioridad)
-                    .IsRequired()
-                    .HasMaxLength(150)
-                    .IsUnicode(false);
-            });
 
             modelBuilder.Entity<CardManagement>(entity =>
             {
@@ -36,6 +23,27 @@ namespace RappidPayTest.Infrastructure.Data.Configuration
                 //    .IsUnicode(false);
             });
 
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("Transaction");
+
+                //entity.Property(e => e.Prioridad)
+                //    .IsRequired()
+                //    .HasMaxLength(150)
+                //    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("User");
+
+                entity.Property(e => e.RoleID)
+                    .IsRequired().HasColumnName("RoleID");
+            });
         }
 
     }

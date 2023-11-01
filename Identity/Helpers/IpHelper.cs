@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 
-namespace RappidPayTest.Identity.Helpers
+namespace RapidPayTest.Identity.Helpers
 {
     public class IpHelper
     {

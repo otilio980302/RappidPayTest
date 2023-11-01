@@ -1,12 +1,12 @@
-﻿using RappidPayTest.Application.DTOs;
-using RappidPayTest.Application.Interfaces.Repositories;
-using RappidPayTest.Application.Wrappers;
+﻿using RapidPayTest.Application.DTOs;
+using RapidPayTest.Application.Interfaces.Repositories;
+using RapidPayTest.Application.Wrappers;
 using Dapper;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RappidPayTest.Infrastructure.Repositories
+namespace RapidPayTest.Infrastructure.Repositories
 {
     public class DirectQueryOrSPRepository : DapperBaseRepository, IDirectQueryOrSPRepository
     {

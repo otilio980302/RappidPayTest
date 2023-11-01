@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace RappidPayTest.Application.Exceptions
+namespace RapidPayTest.Application.Exceptions
 {
     public class ApiException : Exception
     {

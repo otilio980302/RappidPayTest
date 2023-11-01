@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\RappidPayTest.Application.csproj" />
-    <ProjectReference Include="..\Identity\RappidPayTest.Identity.csproj" />
+    <ProjectReference Include="..\Core\RapidPayTest.Application.csproj" />
+    <ProjectReference Include="..\Identity\RapidPayTest.Identity.csproj" />
   </ItemGroup>
 
 </Project>

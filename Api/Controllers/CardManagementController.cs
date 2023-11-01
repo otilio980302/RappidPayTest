@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RappidPayTest.Application.DTOs;
-using RappidPayTest.Application.DTOs.ViewModel;
-using RappidPayTest.Application.Interfaces.Services;
-using RappidPayTest.Application.Wrappers;
+using RapidPayTest.Application.DTOs;
+using RapidPayTest.Application.DTOs.ViewModel;
+using RapidPayTest.Application.Interfaces.Services;
+using RapidPayTest.Application.Wrappers;
 using Microsoft.AspNetCore.Authorization;
-using RappidPayTest.Api.Controllers.Base;
+using RapidPayTest.Api.Controllers.Base;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace RappidPayTest.Api.Controllers
+namespace RapidPayTest.Api.Controllers
 {
     [Route("api/[controller]")]
     public class CardManagementController : OwnBaseController
@@ -18,7 +19,7 @@ namespace RappidPayTest.Api.Controllers
         {
             _cardManagementService = cardManagementService;
         }
-        //[Authorize(Roles = "Administrator")]
+
         [HttpGet("{CardNumber}")]
         [ProducesResponseType(typeof(Response<CardManagementVm>), 200)]
         public async Task<IActionResult> GetAsync(string CardNumber)
@@ -26,17 +27,15 @@ namespace RappidPayTest.Api.Controllers
             return Ok(await _cardManagementService.GetByCardNumberAsync(CardNumber));
         }
 
-        //[Authorize]
-        //[HttpGet("")]
-        //[ProducesResponseType(typeof(PagedResponse<IList<CardManagementVm>>), 200)]
-        //public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, string filter = "")
-        //{
-        //    var user = base.GetLoggerUser();
-        //    var userId = base.GetLoggerUserId();
+        [HttpGet("")]
+        [ProducesResponseType(typeof(PagedResponse<IList<TransactionVm>>), 200)]
+        public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, string filter = "")
+        {
 
-        //    return Ok(await _cardManagementService.GetPagedListAsync(pageNumber, pageSize, filter));
-        //}
+            return Ok(await _cardManagementService.GetTransactionPagedListAsync(pageNumber, pageSize, filter));
+        }
 
+        [Authorize(Policy = "RequireAdmin")]
         [HttpPost]
         [ProducesResponseType(typeof(Response<IList<CardManagementVm>>), 200)]
         public async Task<IActionResult> PostAsync([FromBody] CardManagementCreateDto obj)

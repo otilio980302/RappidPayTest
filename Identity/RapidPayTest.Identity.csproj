@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup> 
-    <ProjectReference Include="..\Core\RappidPayTest.Application.csproj" />
+    <ProjectReference Include="..\Core\RapidPayTest.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

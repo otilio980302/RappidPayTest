@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using RappidPayTest.Identity.Models;
+using RapidPayTest.Identity.Models;
 
-namespace RappidPayTest.Identity.Contexts
+namespace RapidPayTest.Identity.Contexts
 {
     public class IdentityContext : IdentityDbContext<ApplicationUser>
     {

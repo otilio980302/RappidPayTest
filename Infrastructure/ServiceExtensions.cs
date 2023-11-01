@@ -1,16 +1,18 @@
-﻿using RappidPayTest.Infrastructure.Repositories;
-using RappidPayTest.Infrastructure.Services;
+﻿using RapidPayTest.Infrastructure.Repositories;
+using RapidPayTest.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Data.SqlClient;
-using RappidPayTest.Application.Interfaces.Repositories;
-using RappidPayTest.Application.Interfaces.Services;
-using RappidPayTest.Infrastructure.Data;
-using RappidPayTest.Infrastructure.Repositories;
+using RapidPayTest.Application.Interfaces.Repositories;
+using RapidPayTest.Application.Interfaces.Services;
+using RapidPayTest.Infrastructure.Data;
+using RapidPayTest.Infrastructure.Repositories;
+using RapidPayTest.Application.Interfaces.Services.Security;
+using RapidPayTest.Identity.Services;
 
-namespace RappidPayTest.Infrastructure
+namespace RapidPayTest.Infrastructure
 {
     public static class ServiceExtensions
     {
@@ -30,10 +32,10 @@ namespace RappidPayTest.Infrastructure
             #region Repositories
             services.AddScoped(typeof(IRepositoryAsync<>), typeof(EFRepository<>));
             services.AddScoped<IDirectQueryOrSPRepository, DirectQueryOrSPRepository>();
+            services.AddScoped<ICardManagementRepository, CardManagementRepository>();
             #endregion
 
             #region Services 
-            services.AddScoped<IPrioridadesService, PrioridadesService>();
             services.AddScoped<ICardManagementService, CardManagementService>();
             #endregion
         }

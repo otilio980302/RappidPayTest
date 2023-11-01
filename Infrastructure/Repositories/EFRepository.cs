@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using RappidPayTest.Application.Interfaces.Repositories;
-using RappidPayTest.Application.Wrappers;
+using RapidPayTest.Application.Interfaces.Repositories;
+using RapidPayTest.Application.Wrappers;
 
-namespace RappidPayTest.Infrastructure.Repositories
+namespace RapidPayTest.Infrastructure.Repositories
 {
     public class EFRepository<T> : IRepositoryAsync<T> where T : class
     {

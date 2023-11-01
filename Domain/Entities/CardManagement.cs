@@ -1,8 +1,8 @@
 ﻿
-using RappidPayTest.Domain.Entities.Base;
+using RapidPayTest.Domain.Entities.Base;
 using System.Collections.Generic;
 
-namespace RappidPayTest.Domain.Entities
+namespace RapidPayTest.Domain.Entities
 {
     public partial class CardManagement : BaseEntity
     {
