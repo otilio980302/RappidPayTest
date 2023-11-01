@@ -20,13 +20,15 @@ namespace RapidPayTest.Infrastructure.Services
     {
         private readonly ICardManagementRepository _cardManagementRepository;
         private readonly IRepositoryAsync<Transaction> _transactionRepo;
+        private readonly IRepositoryAsync<User> _userRepo;
         private readonly IRepositoryAsync<CardManagement> _cardManagementRepo;
         private readonly IMapper _mapper;
         private readonly IValidator<CardManagementCreateDto> _validator;
-        public CardManagementService(ICardManagementRepository cardManagementRepository, IRepositoryAsync<Transaction> transactionRepo, IRepositoryAsync<CardManagement> cardManagementRepo, IMapper mapper, IValidator<CardManagementCreateDto> validator, IHttpContextAccessor context) : base(context)
+        public CardManagementService(ICardManagementRepository cardManagementRepository, IRepositoryAsync<Transaction> transactionRepo, IRepositoryAsync<User> userRepo, IRepositoryAsync<CardManagement> cardManagementRepo, IMapper mapper, IValidator<CardManagementCreateDto> validator, IHttpContextAccessor context) : base(context)
         {
             _cardManagementRepository = cardManagementRepository;
             _transactionRepo = transactionRepo;
+            _userRepo = userRepo;
             _cardManagementRepo = cardManagementRepo;
             _mapper = mapper;
             _validator = validator;
@@ -44,6 +46,9 @@ namespace RapidPayTest.Infrastructure.Services
 
             var valResult = _validator.Validate(dto);
             if (!valResult.IsValid) throw new ApiValidationException(valResult.Errors);
+
+            var result = await _userRepo.Exists(x => x.ID.Equals(dto.IDUser));
+            if (result) { throw new ApiException($"No user found with the provided ID: {dto.IDUser}"); }
 
             var obj = _mapper.Map<CardManagement>(dto);
             obj.CreateAt = DateTime.Now;
