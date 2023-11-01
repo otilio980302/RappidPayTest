@@ -1,5 +1,6 @@
 ﻿using RapidPayTest.Identity.Models;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace RapidPayTest.Infrastructure.Services
 {
@@ -33,17 +34,17 @@ namespace RapidPayTest.Infrastructure.Services
         }
 
 
-        public string GetLoggerUserId()
+        public int GetLoggerUserId()
         {
             var User = _context.HttpContext.User;
             if (User.Identity.IsAuthenticated)
             {
 
-                return User.FindFirst("uid").Value;
+                return Convert.ToInt32(User.FindFirst("uid").Value);
             }
 
 
-            return null;
+            return 0;
 
         }
 

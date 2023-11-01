@@ -16,23 +16,12 @@ namespace RapidPayTest.Infrastructure.Data.Configuration
                 entity.HasKey(e => e.ID);
 
                 entity.ToTable("CardManagement");
-
-                //entity.Property(e => e.Prioridad)
-                //    .IsRequired()
-                //    .HasMaxLength(150)
-                //    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Transaction>(entity =>
             {
                 entity.HasKey(e => e.ID);
-
                 entity.ToTable("Transaction");
-
-                //entity.Property(e => e.Prioridad)
-                //    .IsRequired()
-                //    .HasMaxLength(150)
-                //    .IsUnicode(false);
             });
 
             modelBuilder.Entity<User>(entity =>

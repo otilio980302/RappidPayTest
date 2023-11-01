@@ -12,8 +12,8 @@ namespace RapidPayTest.Infrastructure.Services
             while (!stoppingToken.IsCancellationRequested)
             {
                 UfeService.Instance.UpdateFee();
-                //await Task.Delay(TimeSpan.FromSeconds(20), stoppingToken);
-                await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+                //await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
             }
         }
     }

@@ -20,32 +20,31 @@ namespace RapidPayTest.Api.Controllers
             _cardManagementService = cardManagementService;
         }
 
-        [HttpGet("{CardNumber}")]
+        [HttpGet("GetAccountBalance")]
         [ProducesResponseType(typeof(Response<CardManagementVm>), 200)]
-        public async Task<IActionResult> GetAsync(string CardNumber)
+        public async Task<IActionResult> GetAsync()
         {
-            return Ok(await _cardManagementService.GetByCardNumberAsync(CardNumber));
+            return Ok(await _cardManagementService.GetAccountBalance());
         }
 
-        [HttpGet("")]
+        [HttpGet("GetMyTransactions")]
         [ProducesResponseType(typeof(PagedResponse<IList<TransactionVm>>), 200)]
         public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, string filter = "")
         {
-
             return Ok(await _cardManagementService.GetTransactionPagedListAsync(pageNumber, pageSize, filter));
         }
 
         [Authorize(Policy = "RequireAdmin")]
-        [HttpPost]
+        [HttpPost("CreateAccount")]
         [ProducesResponseType(typeof(Response<IList<CardManagementVm>>), 200)]
         public async Task<IActionResult> PostAsync([FromBody] CardManagementCreateDto obj)
         {
             return Ok(await _cardManagementService.InsertAsync(obj));
         }
 
-        [HttpPut("")]
+        [HttpPut("UpdateAccountBalance")]
         [ProducesResponseType(typeof(Response<IList<CardManagementVm>>), 200)]
-        public async Task<IActionResult> PutAsync(CardManagementDto obj)
+        public async Task<IActionResult> PutAsync(CardManagmentUpdateBalanceDto obj)
         {
             return Ok(await _cardManagementService.UpdateAsync(obj));
         }

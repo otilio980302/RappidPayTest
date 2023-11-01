@@ -77,6 +77,7 @@ namespace RapidPayTest.Identity.Services
             return new Response<AuthenticationResponse>(response);
         }
 
+        //This method facilitates the registration of a new user in the system
         public async Task<Response<UserVm>> RegisterAsync(UserDto request, string origin)
         {
             var valResult = _validator.Validate(request);
@@ -88,17 +89,6 @@ namespace RapidPayTest.Identity.Services
             {
                 throw new KeyNotFoundException($"already exist ={request.Email}");
             }
-
-            var usuario = new ApplicationUser
-            {
-                Email = request.Email,
-                Name = request.Name,
-                LastName = request.LastName,
-                IdentificationNumber = request.SocialNumber,
-                UserName = request.Name,
-                EmailConfirmed = true,
-                PhoneNumberConfirmed = true
-            };
 
             var obj = _mapper.Map<User>(request);
             var password = _cryptographyProcessorService.GetPasswordAndSecurityKeyInfo(request.Password);
@@ -113,6 +103,7 @@ namespace RapidPayTest.Identity.Services
             return new Response<UserVm>(_mapper.Map<UserVm>(await _userRepo.AddAsync(obj)));
         }
 
+        //This method retrieves a paginated list of users from the user repository based
         public async Task<PagedResponse<IList<UserVm>>> GetUsers(int pageNumber, int pageSize, string filter = null)
         {
 
@@ -129,16 +120,6 @@ namespace RapidPayTest.Identity.Services
 
         private async Task<JwtSecurityToken> GenerateJWTToken(User user)
         {
-            //var userClaims = await _userManager.GetClaimsAsync(user);
-            //var roles = await _userManager.GetRolesAsync(user);
-
-            //var roleClaims = new List<Claim>();
-
-            //for (int i = 0; i < roles.Count; i++)
-            //{
-            //    roleClaims.Add(new Claim("roles", roles[i]));
-            //}
-
             string ipAddress = IpHelper.GetIpAddress();
 
             var claims = new[]

@@ -12,8 +12,8 @@ namespace RapidPayTest.Application.Interfaces.Services
     public interface ICardManagementService
     {
         Task<Response<CardManagementVm>> InsertAsync(CardManagementCreateDto dto);
-        Task<Response<CardManagementVm>> UpdateAsync(CardManagementDto obj);
-        Task<Response<CardManagementVm>> GetByCardNumberAsync(string CardNumber);
+        Task<Response<CardManagementVm>> UpdateAsync(CardManagmentUpdateBalanceDto obj);
+        Task<Response<CardManagementVm>> GetAccountBalance();
         Task<PagedResponse<IList<TransactionVm>>> GetTransactionPagedListAsync(int pageNumber, int pageSize, string filter = null);
     }
 }

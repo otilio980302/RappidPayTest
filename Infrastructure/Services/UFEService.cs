@@ -11,7 +11,7 @@ namespace RapidPayTest.Infrastructure.Services
         private UfeService()
         {
             random = new Random();
-            lastFeeAmount = 0.01m; // Initial fee amount (you can set it to any value)
+            lastFeeAmount = 0.05m; // Initial fee amount (you can set it to any value)
         }
 
         public static UfeService Instance

@@ -14,6 +14,8 @@ namespace RapidPayTest.Application.Mapping
 
             CreateMap<User, UserVm>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
+
+            CreateMap<Transaction, TransactionVm>().ReverseMap();
         }
     }
 }
